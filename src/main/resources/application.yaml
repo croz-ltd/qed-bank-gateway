@@ -4,3 +4,8 @@ server:
 service-url:
   balance: ${SERVICE_URL_BALANCE:http://localhost:8666}
   transaction: ${SERVICE_URL_TRANSACTION:http://localhost:9666}
+
+opentracing:
+  jaeger:
+    http-sender:
+      url: http://localhost:16686/api/traces
