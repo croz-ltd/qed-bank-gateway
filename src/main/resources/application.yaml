@@ -1,0 +1,6 @@
+server:
+  port: 8081
+
+service-url:
+  balance: ${SERVICE_URL_BALANCE:http://localhost:8666}
+  transaction: ${SERVICE_URL_TRANSACTION:http://localhost:9666}
