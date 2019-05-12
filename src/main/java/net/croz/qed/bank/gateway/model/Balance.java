@@ -7,6 +7,8 @@ public class Balance {
     private String oib;
     private String iban;
     private BigDecimal balance;
+    private String currency;
+    private String country;
 
     public String getOib() {
         return oib;
@@ -30,5 +32,21 @@ public class Balance {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }
