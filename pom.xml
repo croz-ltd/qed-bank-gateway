@@ -65,7 +65,8 @@
 		<configuration>
 		   <to>
 	               <image>registry.dmz.croz.net/qed2019/qed-bank-gateway</image>
-		</configuration>
+	           </to>
+	        </configuration>
             </plugin>
 
         </plugins>
