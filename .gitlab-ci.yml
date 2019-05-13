@@ -1,0 +1,48 @@
+image: docker:latest
+services:
+  - docker:dind
+
+variables:
+  OPENSHIFT_TOKEN: $OPENSHIFT_AUTH_TOKEN
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - .m2/
+
+#############
+# MVN Build #
+#############
+maven-build:
+  tags:
+    - maven
+  image: maven:3-jdk-8
+  stage: build
+  script: "mvn clean package jib:build -B"
+  artifacts:
+    paths:
+      - target/*.jar
+
+####################
+# OpenShift Deploy #
+####################
+.openshift-deploy: &openshift-deploy
+  stage: deploy
+  image: ayufan/openshift-cli
+  before_script:
+  - oc login https://os-master.lan.croz.net:8443 --token="$OPENSHIFT_TOKEN" --insecure-skip-tls-verify
+  - oc project qed-bank
+  script:
+  - oc import-image $IMAGE --from=$IMAGE_TAG --confirm
+    
+openshift-deploy-prod:
+  <<: *openshift-deploy
+  only:
+    - master
+  variables:
+    IMAGE: employee-images-prod
+    IMAGE_TAG: registry.dmz.croz.net/qed2019/qed-bank-gateway:latest
+  
