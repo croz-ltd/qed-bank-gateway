@@ -3,21 +3,13 @@ package net.croz.qed.bank.gateway.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Response<T> {
+public final class Response<T> {
 
     private boolean success;
-    private String  error;
-    private T       data;
+    private String error;
+    private T data;
 
     private Response() {
-    }
-
-    public static <T> Response<T> success(final T data) {
-        final Response<T> response = new Response<>();
-        response.setSuccess(true);
-        response.setError(null);
-        response.setData(data);
-        return response;
     }
 
     public static <T> Response<T> fail(final String error) {
@@ -32,7 +24,7 @@ public class Response<T> {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public void setSuccess(final boolean success) {
         this.success = success;
     }
 
@@ -40,7 +32,7 @@ public class Response<T> {
         return error;
     }
 
-    public void setError(String error) {
+    public void setError(final String error) {
         this.error = error;
     }
 
@@ -48,7 +40,7 @@ public class Response<T> {
         return data;
     }
 
-    public void setData(T data) {
+    public void setData(final T data) {
         this.data = data;
     }
 

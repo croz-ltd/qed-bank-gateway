@@ -20,8 +20,8 @@ import java.util.List;
 @RestController
 public class GatewayController {
 
-    private final BalanceGateway     balanceGateway;
-    private final TransactionGateway transactionGateway;
+    private final transient BalanceGateway balanceGateway;
+    private final transient TransactionGateway transactionGateway;
 
     @Autowired
     public GatewayController(final BalanceGateway balanceGateway, final TransactionGateway transactionGateway) {

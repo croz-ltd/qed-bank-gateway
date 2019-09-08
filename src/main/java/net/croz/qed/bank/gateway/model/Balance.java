@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 
 public class Balance {
 
-    private String     oib;
-    private String     iban;
-    private BigDecimal balance;
-    private String     currency;
-    private String     country;
+    private String oib;
+    private String iban;
+    private BigDecimal amount;
+    private String currency;
+    private String country;
 
     public String getOib() {
         return oib;
     }
 
-    public void setOib(String oib) {
+    public void setOib(final String oib) {
         this.oib = oib;
     }
 
@@ -22,23 +22,23 @@ public class Balance {
         return iban;
     }
 
-    public void setIban(String iban) {
+    public void setIban(final String iban) {
         this.iban = iban;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setAmount(final BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(final String currency) {
         this.currency = currency;
     }
 

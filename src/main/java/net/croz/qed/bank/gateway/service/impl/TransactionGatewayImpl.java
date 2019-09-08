@@ -1,13 +1,13 @@
 package net.croz.qed.bank.gateway.service.impl;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import net.croz.qed.bank.gateway.config.ServiceUrlProperties;
 import net.croz.qed.bank.gateway.model.ModifyBalanceRequest;
 import net.croz.qed.bank.gateway.model.Response;
 import net.croz.qed.bank.gateway.service.TransactionGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,13 +21,12 @@ public class TransactionGatewayImpl implements TransactionGateway {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionGatewayImpl.class);
 
     private final RestTemplate restTemplate;
-    private final String       serviceUrl;
+    private final ServiceUrlProperties serviceUrlProperties;
 
     @Autowired
-    public TransactionGatewayImpl(final RestTemplate restTemplate,
-        @Value("${service-url.transaction}") final String serviceUrl) {
+    public TransactionGatewayImpl(final RestTemplate restTemplate, final ServiceUrlProperties serviceUrlProperties) {
         this.restTemplate = restTemplate;
-        this.serviceUrl = serviceUrl;
+        this.serviceUrlProperties = serviceUrlProperties;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class TransactionGatewayImpl implements TransactionGateway {
         LOGGER.info("Calling transaction service to perform balance addition...");
 
         final ResponseEntity<Response> response = restTemplate.postForEntity(
-            serviceUrl + "/transaction/add", //
+            serviceUrlProperties.getTransaction() + "/transaction/add", //
             request, //
             Response.class //
         );
@@ -56,7 +55,7 @@ public class TransactionGatewayImpl implements TransactionGateway {
         LOGGER.info("Calling transaction service to perform balance withdrawal...");
 
         final ResponseEntity<Response> response = restTemplate.postForEntity(
-            serviceUrl + "/transaction/withdraw", //
+            serviceUrlProperties.getTransaction() + "/transaction/withdraw", //
             request, //
             Response.class //
         );

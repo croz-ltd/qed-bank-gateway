@@ -1,12 +1,12 @@
 package net.croz.qed.bank.gateway.service.impl;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import net.croz.qed.bank.gateway.config.ServiceUrlProperties;
 import net.croz.qed.bank.gateway.model.Balance;
 import net.croz.qed.bank.gateway.service.BalanceGateway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -24,17 +24,16 @@ public class BalanceGatewayImpl implements BalanceGateway {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceGatewayImpl.class);
 
-    private static final Map<String, Optional<List<Balance>>> OIB_CACHE  = new HashMap<>();
-    private static final Map<String, Optional<Balance>>       IBAN_CACHE = new HashMap<>();
+    private static final Map<String, Optional<List<Balance>>> OIB_CACHE = new HashMap<>();
+    private static final Map<String, Optional<Balance>> IBAN_CACHE = new HashMap<>();
 
     private final RestTemplate restTemplate;
-    private final String       serviceUrl;
+    private final ServiceUrlProperties serviceUrlProperties;
 
     @Autowired
-    public BalanceGatewayImpl(final RestTemplate restTemplate,
-        @Value("${service-url.balance}") final String serviceUrl) {
+    public BalanceGatewayImpl(final RestTemplate restTemplate, final ServiceUrlProperties serviceUrlProperties) {
         this.restTemplate = restTemplate;
-        this.serviceUrl = serviceUrl;
+        this.serviceUrlProperties = serviceUrlProperties;
     }
 
     @Override
@@ -43,7 +42,7 @@ public class BalanceGatewayImpl implements BalanceGateway {
         LOGGER.info("Calling balance service to get balance by oib...");
 
         final ResponseEntity<Optional<List<Balance>>> response = restTemplate.exchange( //
-            serviceUrl + "/balance/oib/" + oib, //
+            serviceUrlProperties.getBalance() + "/balance/oib/" + oib, //
             HttpMethod.GET, //
             null, //
             new ParameterizedTypeReference<Optional<List<Balance>>>() { //
@@ -67,7 +66,7 @@ public class BalanceGatewayImpl implements BalanceGateway {
         LOGGER.info("Calling balance service to get balance by iban...");
 
         final ResponseEntity<Optional<Balance>> response = restTemplate.exchange( //
-            serviceUrl + "/balance/iban/" + iban, //
+            serviceUrlProperties.getBalance() + "/balance/iban/" + iban, //
             HttpMethod.GET, //
             null, //
             new ParameterizedTypeReference<Optional<Balance>>() { //
