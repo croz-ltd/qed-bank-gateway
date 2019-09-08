@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface TransactionGateway {
 
-    Optional<Response<String>> performAdd(final ModifyBalanceRequest request);
+    Optional<Response<String>> performAdd(ModifyBalanceRequest request);
 
-    Optional<Response<String>> performWithdraw(final ModifyBalanceRequest request);
+    Optional<Response<String>> performWithdraw(ModifyBalanceRequest request);
 
 }

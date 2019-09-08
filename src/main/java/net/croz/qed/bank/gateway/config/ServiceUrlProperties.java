@@ -14,7 +14,7 @@ public class ServiceUrlProperties {
         return balance;
     }
 
-    public void setBalance(String balance) {
+    public void setBalance(final String balance) {
         this.balance = balance;
     }
 
@@ -22,7 +22,7 @@ public class ServiceUrlProperties {
         return transaction;
     }
 
-    public void setTransaction(String transaction) {
+    public void setTransaction(final String transaction) {
         this.transaction = transaction;
     }
 

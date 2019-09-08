@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface BalanceGateway {
 
-    Optional<List<Balance>> getByOib(final String oib);
+    Optional<List<Balance>> getByOib(String oib);
 
-    Optional<Balance> getByIban(final String iban);
+    Optional<Balance> getByIban(String iban);
 
 }

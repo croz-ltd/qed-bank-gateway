@@ -20,8 +20,8 @@ public class TransactionGatewayImpl implements TransactionGateway {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionGatewayImpl.class);
 
-    private final RestTemplate restTemplate;
-    private final ServiceUrlProperties serviceUrlProperties;
+    private final transient RestTemplate restTemplate;
+    private final transient ServiceUrlProperties serviceUrlProperties;
 
     @Autowired
     public TransactionGatewayImpl(final RestTemplate restTemplate, final ServiceUrlProperties serviceUrlProperties) {
@@ -34,18 +34,15 @@ public class TransactionGatewayImpl implements TransactionGateway {
     public Optional<Response<String>> performAdd(final ModifyBalanceRequest request) {
         LOGGER.info("Calling transaction service to perform balance addition...");
 
-        final ResponseEntity<Response> response = restTemplate.postForEntity(
-            serviceUrlProperties.getTransaction() + "/transaction/add", //
-            request, //
-            Response.class //
-        );
+        final ResponseEntity<Response> response = restTemplate
+            .postForEntity(serviceUrlProperties.getTransaction() + "/transaction/add", request, Response.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             LOGGER.info("Transaction service is alive and responded with OK.");
             return Optional.ofNullable(response.getBody());
         }
 
-        LOGGER.info("Transaction service is alive but responded with " + response.getStatusCode().name() + ".");
+        LOGGER.info("Transaction service is alive but responded with {}.", response.getStatusCode().name());
         return Optional.empty();
     }
 
@@ -54,18 +51,15 @@ public class TransactionGatewayImpl implements TransactionGateway {
     public Optional<Response<String>> performWithdraw(final ModifyBalanceRequest request) {
         LOGGER.info("Calling transaction service to perform balance withdrawal...");
 
-        final ResponseEntity<Response> response = restTemplate.postForEntity(
-            serviceUrlProperties.getTransaction() + "/transaction/withdraw", //
-            request, //
-            Response.class //
-        );
+        final ResponseEntity<Response> response = restTemplate
+            .postForEntity(serviceUrlProperties.getTransaction() + "/transaction/withdraw", request, Response.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
             LOGGER.info("Transaction service is alive and responded with OK.");
             return Optional.ofNullable(response.getBody());
         }
 
-        LOGGER.info("Transaction service is alive but responded with " + response.getStatusCode().name() + ".");
+        LOGGER.info("Transaction service is alive but responded with {}.", response.getStatusCode().name());
         return Optional.empty();
     }
 

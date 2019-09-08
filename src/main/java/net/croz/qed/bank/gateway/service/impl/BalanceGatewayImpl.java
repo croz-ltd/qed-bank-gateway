@@ -27,8 +27,8 @@ public class BalanceGatewayImpl implements BalanceGateway {
     private static final Map<String, Optional<List<Balance>>> OIB_CACHE = new HashMap<>();
     private static final Map<String, Optional<Balance>> IBAN_CACHE = new HashMap<>();
 
-    private final RestTemplate restTemplate;
-    private final ServiceUrlProperties serviceUrlProperties;
+    private final transient RestTemplate restTemplate;
+    private final transient ServiceUrlProperties serviceUrlProperties;
 
     @Autowired
     public BalanceGatewayImpl(final RestTemplate restTemplate, final ServiceUrlProperties serviceUrlProperties) {
@@ -41,13 +41,10 @@ public class BalanceGatewayImpl implements BalanceGateway {
     public Optional<List<Balance>> getByOib(final String oib) {
         LOGGER.info("Calling balance service to get balance by oib...");
 
-        final ResponseEntity<Optional<List<Balance>>> response = restTemplate.exchange( //
-            serviceUrlProperties.getBalance() + "/balance/oib/" + oib, //
-            HttpMethod.GET, //
-            null, //
-            new ParameterizedTypeReference<Optional<List<Balance>>>() { //
-            } //
-        );
+        final ResponseEntity<Optional<List<Balance>>> response =
+            restTemplate.exchange(serviceUrlProperties.getBalance() + "/balance/oib/" + oib, HttpMethod.GET, null,
+                new ParameterizedTypeReference<Optional<List<Balance>>>() {
+                });
 
         if (response.getStatusCode() == HttpStatus.OK) {
             LOGGER.info("Balance service is alive and responded with OK.");
@@ -55,7 +52,7 @@ public class BalanceGatewayImpl implements BalanceGateway {
             return response.getBody();
         }
 
-        LOGGER.info("Balance service is alive but responded with " + response.getStatusCode().name() + ".");
+        LOGGER.info("Balance service is alive but responded with {}.", response.getStatusCode().name());
         OIB_CACHE.put(oib, Optional.empty());
         return Optional.empty();
     }
@@ -65,13 +62,10 @@ public class BalanceGatewayImpl implements BalanceGateway {
     public Optional<Balance> getByIban(final String iban) {
         LOGGER.info("Calling balance service to get balance by iban...");
 
-        final ResponseEntity<Optional<Balance>> response = restTemplate.exchange( //
-            serviceUrlProperties.getBalance() + "/balance/iban/" + iban, //
-            HttpMethod.GET, //
-            null, //
-            new ParameterizedTypeReference<Optional<Balance>>() { //
-            } //
-        );
+        final ResponseEntity<Optional<Balance>> response = restTemplate
+            .exchange(serviceUrlProperties.getBalance() + "/balance/iban/" + iban, HttpMethod.GET, null,
+                new ParameterizedTypeReference<Optional<Balance>>() {
+                });
 
         if (response.getStatusCode() == HttpStatus.OK) {
             LOGGER.info("Balance service is alive and responded with OK.");
@@ -79,7 +73,7 @@ public class BalanceGatewayImpl implements BalanceGateway {
             return response.getBody();
         }
 
-        LOGGER.info("Balance service is alive but responded with " + response.getStatusCode().name() + ".");
+        LOGGER.info("Balance service is alive but responded with {}.", response.getStatusCode().name());
         IBAN_CACHE.put(iban, Optional.empty());
         return Optional.empty();
     }
