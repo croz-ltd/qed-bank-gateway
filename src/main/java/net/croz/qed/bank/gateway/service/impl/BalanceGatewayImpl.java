@@ -21,16 +21,18 @@ import java.util.Optional;
 
 @Service
 public class BalanceGatewayImpl implements BalanceGateway {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(BalanceGatewayImpl.class);
 
-    private static final Map<String, Optional<List<Balance>>> OIB_CACHE = new HashMap<>();
-    private static final Map<String, Optional<Balance>> IBAN_CACHE = new HashMap<>();
+    private static final Map<String, Optional<List<Balance>>> OIB_CACHE  = new HashMap<>();
+    private static final Map<String, Optional<Balance>>       IBAN_CACHE = new HashMap<>();
 
     private final RestTemplate restTemplate;
-    private final String serviceUrl;
+    private final String       serviceUrl;
 
     @Autowired
-    public BalanceGatewayImpl(final RestTemplate restTemplate, @Value("${service-url.balance}") final String serviceUrl) {
+    public BalanceGatewayImpl(final RestTemplate restTemplate,
+        @Value("${service-url.balance}") final String serviceUrl) {
         this.restTemplate = restTemplate;
         this.serviceUrl = serviceUrl;
     }
@@ -41,11 +43,11 @@ public class BalanceGatewayImpl implements BalanceGateway {
         LOGGER.info("Calling balance service to get balance by oib...");
 
         final ResponseEntity<Optional<List<Balance>>> response = restTemplate.exchange( //
-                serviceUrl + "/balance/oib/" + oib, //
-                HttpMethod.GET, //
-                null, //
-                new ParameterizedTypeReference<Optional<List<Balance>>>() { //
-                } //
+            serviceUrl + "/balance/oib/" + oib, //
+            HttpMethod.GET, //
+            null, //
+            new ParameterizedTypeReference<Optional<List<Balance>>>() { //
+            } //
         );
 
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -65,11 +67,11 @@ public class BalanceGatewayImpl implements BalanceGateway {
         LOGGER.info("Calling balance service to get balance by iban...");
 
         final ResponseEntity<Optional<Balance>> response = restTemplate.exchange( //
-                serviceUrl + "/balance/iban/" + iban, //
-                HttpMethod.GET, //
-                null, //
-                new ParameterizedTypeReference<Optional<Balance>>() { //
-                } //
+            serviceUrl + "/balance/iban/" + iban, //
+            HttpMethod.GET, //
+            null, //
+            new ParameterizedTypeReference<Optional<Balance>>() { //
+            } //
         );
 
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -96,4 +98,5 @@ public class BalanceGatewayImpl implements BalanceGateway {
         }
         return Optional.empty();
     }
+
 }

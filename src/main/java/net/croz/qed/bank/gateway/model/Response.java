@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response<T> {
+
     private boolean success;
-    private String error;
-    private T data;
+    private String  error;
+    private T       data;
 
     private Response() {
     }
@@ -50,4 +51,5 @@ public class Response<T> {
     public void setData(T data) {
         this.data = data;
     }
+
 }

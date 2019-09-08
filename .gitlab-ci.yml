@@ -1,12 +1,14 @@
-image: docker:latest
-services:
-  - docker:dind
+image: registry.dmz.croz.net/croz/build-image:buildah-1.10.1-oc-3.11.1-podman-1.5.1-skopeo-0.1.37
 
 variables:
-  OPENSHIFT_TOKEN: $OPENSHIFT_AUTH_TOKEN
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2"
+  SPRING_PROFILES_ACTIVE: production
 
 stages:
   - build
+  - quality-control
+  - package
+  - publish
   - deploy
 
 cache:
@@ -21,28 +23,61 @@ maven-build:
     - maven
   image: maven:3-jdk-8
   stage: build
-  script: "mvn clean package jib:build -B"
+  script: "mvn package -B"
   artifacts:
     paths:
       - target/*.jar
 
+#############################
+# SonarQube Quality Control #
+#############################
+quality-control:
+  stage: quality-control
+  tags:
+    - maven
+  image: maven:3-jdk-8
+  script: "mvn --batch-mode verify test sonar:sonar -Dsonar.analysis.mode=publish -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME"
+  artifacts:
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+    paths:
+      - target/*.jar
+
+###############
+# JIB package #
+###############
+jib-package:
+  stage: package
+  tags:
+    - maven
+  image: maven:3-jdk-8
+  script:
+    - mvn compile jib:build
+
+####################################
+# Copy images to public registries #
+####################################
+publish-public:
+  stage: publish
+  before_script:
+    - buildah login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" docker.io
+    - buildah login -u "$QUAY_USERNAME" -p "$QUAY_PASSWORD" quay.io
+  script:
+    - skopeo --insecure-policy copy docker://registry.dmz.croz.net/qed2019/qed-bank-gateway:latest docker://docker.io/crozltd/qed-bank-gateway
+    - skopeo --insecure-policy copy docker://registry.dmz.croz.net/qed2019/qed-bank-gateway:latest docker://quay.io/crozltd/qed-bank-gateway
+  only:
+    - master
+
 ####################
 # OpenShift Deploy #
 ####################
-.openshift-deploy: &openshift-deploy
+openshift-deploy:
   stage: deploy
-  image: ayufan/openshift-cli
   before_script:
-  - oc login https://os-master.lan.croz.net:8443 --token="$OPENSHIFT_TOKEN" --insecure-skip-tls-verify
-  - oc project qed-bank
+    - oc login https://os-master.lan.croz.net:8443 --token="$OPENSHIFT_AUTH_TOKEN" --insecure-skip-tls-verify
+    - oc project qed-bank
   script:
-  - oc import-image $IMAGE --from=$IMAGE_TAG --confirm
-    
-openshift-deploy-prod:
-  <<: *openshift-deploy
+    - oc import-image qed-bank-gateway --confirm
   only:
     - master
-  variables:
-    IMAGE: employee-images-prod
-    IMAGE_TAG: registry.dmz.croz.net/qed2019/qed-bank-gateway:latest
-  

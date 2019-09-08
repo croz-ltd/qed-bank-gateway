@@ -1,0 +1,15 @@
+language: java
+jdk: openjdk8
+
+env:
+  global:
+    - secure: "WiF+SFyw2ZyLpGCy6p1gHqc3f8UU1da53oU/P4FsSh4hc85X8UoAN+Z4oAItILSXCfKiun9GP2QULXk8mxzGwdgt02cb2Css0EW6paGaXWfO4w6ATiuKnnHcWsQ/fGL/WriVRDyy01rl+4IqAaG8adPMsNYhFZ2IGqxm+THCel9mXm2SFKYKCw6JOohh4g/286sCRtX1ks3rxntGWlTGLL6wtPcyFd59jIeSRD6vHP9e90XmaZ49nETN8NGkGgaO8TL3ScQm0QuNRMkS82xgl2TlZu9px2qhN3fJflRxzOYl6FUy150iYW9LLSM1282wuGUa/HPaIT8uLDE4UXtgK7Xq3oz1QHtnhvHEFM9SMzZJ1IRdLda2T+G/167J18uBLhchySx8NoWNoZeC6fQL8OXd/Unz6Vf9tHq1TX+dV1yobgwoAL41rw/MSq5fb6XruQqKPtZ91lmXy8L6TWfZQvQks3AtXD2ewzOSakjLzD2K7110aKQ5E00GboWOpoUFq+YV1N9J8cV7Id16nYOa2Tngs65qQP1ZvcUUoM6nzNzbKdJUeDIdW7TN7278Oi1WoyOIwDdXC+4RPOuOFXAH1JF0/h5vGJf+L2ZHj4h1OI6SIgYDppvOkeaTilUKBspGrqsvpmPO4Cr2xVw9u6efa9+WE6S7bRA6MBtq/LMNvnw="
+
+addons:
+  sonarcloud:
+    organization: "croz-ltd"
+    token:
+      secure: $SONAR_TOKEN
+
+script:
+  - ./mvnw clean package sonar:sonar

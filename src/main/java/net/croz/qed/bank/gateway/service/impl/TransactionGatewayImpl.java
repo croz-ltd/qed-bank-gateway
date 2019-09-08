@@ -17,13 +17,15 @@ import java.util.Optional;
 
 @Service
 public class TransactionGatewayImpl implements TransactionGateway {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionGatewayImpl.class);
 
     private final RestTemplate restTemplate;
-    private final String serviceUrl;
+    private final String       serviceUrl;
 
     @Autowired
-    public TransactionGatewayImpl(final RestTemplate restTemplate, @Value("${service-url.transaction}") final String serviceUrl) {
+    public TransactionGatewayImpl(final RestTemplate restTemplate,
+        @Value("${service-url.transaction}") final String serviceUrl) {
         this.restTemplate = restTemplate;
         this.serviceUrl = serviceUrl;
     }
@@ -34,9 +36,9 @@ public class TransactionGatewayImpl implements TransactionGateway {
         LOGGER.info("Calling transaction service to perform balance addition...");
 
         final ResponseEntity<Response> response = restTemplate.postForEntity(
-                serviceUrl + "/transaction/add", //
-                request, //
-                Response.class //
+            serviceUrl + "/transaction/add", //
+            request, //
+            Response.class //
         );
 
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -54,9 +56,9 @@ public class TransactionGatewayImpl implements TransactionGateway {
         LOGGER.info("Calling transaction service to perform balance withdrawal...");
 
         final ResponseEntity<Response> response = restTemplate.postForEntity(
-                serviceUrl + "/transaction/withdraw", //
-                request, //
-                Response.class //
+            serviceUrl + "/transaction/withdraw", //
+            request, //
+            Response.class //
         );
 
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -75,4 +77,5 @@ public class TransactionGatewayImpl implements TransactionGateway {
     public Optional<Response<String>> fallbackPerformWithdraw(final ModifyBalanceRequest request) {
         return Optional.of(Response.fail("Currently is not possible to execute transaction. Please try again."));
     }
+
 }

@@ -11,8 +11,19 @@ import org.springframework.web.client.RestTemplate;
 @EnableCircuitBreaker
 @SpringBootApplication
 public class QedBankGatewayApplication {
+
     public static void main(final String[] args) {
         SpringApplication.run(QedBankGatewayApplication.class, args);
+    }
+
+    @Bean
+    public static JaegerTracer getTracer() {
+        final Configuration.SamplerConfiguration samplerConfig =
+            Configuration.SamplerConfiguration.fromEnv().withType("const").withParam(1);
+        final Configuration.ReporterConfiguration reporterConfig =
+            Configuration.ReporterConfiguration.fromEnv().withLogSpans(true);
+        return new Configuration("qed-bank-gateway").withSampler(samplerConfig).withReporter(reporterConfig)
+            .getTracer();
     }
 
     @Bean
@@ -20,10 +31,4 @@ public class QedBankGatewayApplication {
         return new RestTemplate();
     }
 
-    @Bean
-    public static JaegerTracer getTracer() {
-        final Configuration.SamplerConfiguration samplerConfig = Configuration.SamplerConfiguration.fromEnv().withType("const").withParam(1);
-        final Configuration.ReporterConfiguration reporterConfig = Configuration.ReporterConfiguration.fromEnv().withLogSpans(true);
-        return new Configuration("qed-bank-gateway").withSampler(samplerConfig).withReporter(reporterConfig).getTracer();
-    }
 }

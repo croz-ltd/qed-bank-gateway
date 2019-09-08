@@ -3,7 +3,8 @@ package net.croz.qed.bank.gateway.model;
 import java.math.BigDecimal;
 
 public class ModifyBalanceRequest {
-    private String iban;
+
+    private String     iban;
     private BigDecimal amount;
 
     public String getIban() {
@@ -21,4 +22,5 @@ public class ModifyBalanceRequest {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
 }

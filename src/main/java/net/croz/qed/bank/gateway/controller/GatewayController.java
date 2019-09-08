@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 public class GatewayController {
 
-    private final BalanceGateway balanceGateway;
+    private final BalanceGateway     balanceGateway;
     private final TransactionGateway transactionGateway;
 
     @Autowired

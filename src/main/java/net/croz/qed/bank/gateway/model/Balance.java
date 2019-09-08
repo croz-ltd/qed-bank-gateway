@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 
 public class Balance {
 
-    private String oib;
-    private String iban;
+    private String     oib;
+    private String     iban;
     private BigDecimal balance;
-    private String currency;
-    private String country;
+    private String     currency;
+    private String     country;
 
     public String getOib() {
         return oib;
@@ -49,4 +49,5 @@ public class Balance {
     public void setCountry(String country) {
         this.country = country;
     }
+
 }
